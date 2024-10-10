@@ -217,6 +217,48 @@ Now generate the KG for the following candidate answer based on the provided que
 ### KG:
 """
 
+LLM_TRIPLET_EXTRACTION_PROMPT_Q_CN = \
+"""
+给定一个问题和一个候选答案，请根据问题从候选答案中提取知识图谱，并使用 ("主体", "谓语", "宾语") 的三元组格式表示知识图谱，每个三元组占一行。  
+请注意，这只是一个**抽取任务**，因此**无需关注候选答案的内容是否属实**，只需从中提取三元组即可。
+
+以下是一些示例：
+
+### 问题：
+给定这些关于特斯拉机器人的段落，它的别名是什么？
+
+### 候选答案：
+Optimus（或 Tesla Bot）是由特斯拉公司开发中的一个人形机器人。它于 2021 年 8 月 19 日在该公司的人工智能（AI）日活动上宣布。
+
+### 知识图谱：
+("Optimus", "是", "人形机器人")  
+("Optimus", "由...开发", "特斯拉公司")  
+("Optimus", "也被称为", "Tesla Bot")  
+("特斯拉公司", "宣布", "Optimus")  
+("Optimus 的宣布", "发生在", "人工智能（AI）日活动")  
+("人工智能（AI）日活动", "举行于", "2021 年 8 月 19 日")  
+("人工智能（AI）日活动", "由...组织", "特斯拉公司")
+
+### 问题：
+以下是关于安德烈·魏斯的一些文字，安德烈在巴黎第戎大学待了多少年？
+
+### 候选答案：
+11年
+
+### 知识图谱：
+("安德烈在巴黎第戎大学", "时长", "11年")
+
+现在，请根据以下问题和候选答案生成知识图谱：
+
+### 问题：
+{q}
+
+### 候选答案：
+{a}
+
+### 知识图谱：
+"""
+
 LLM_TRIPLET_EXTRACTION_PROMPT = \
 """Given an input text, please extract a KG from the text and represent the KG with triples formatted with ("subject", "predicate", "object"), each triplet in a line. Please note that this is an EXTRACTION task, so DO NOT care about whether the content of the candidate answer is factual or not, just extract the triplets from it.
 

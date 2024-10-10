@@ -83,8 +83,10 @@ class LLMChecker(CheckerBase):
                 else:
                     assert isinstance(ref_per_batch, list)
                     batch_ref_nums.append(len(ref_per_batch))
-            
-            prompt_template = JOINT_CHECKING_PROMPT_Q
+            if questions[0]:
+                prompt_template = JOINT_CHECKING_PROMPT_Q
+            else:
+                prompt_template = JOINT_CHECKING_PROMPT
             
             prompt_list = []
             prompt_ids = [] # for setting the limit of max num of claims
@@ -105,7 +107,10 @@ class LLMChecker(CheckerBase):
                         claims_text += f'("{c[0]}", "{c[1]}", "{c[2]}")\n'
                         _claim_cnt += 1
                         if _claim_cnt >= joint_check_num or _ci == len(claims_per_batch) - 1:
-                            prompt = prompt_template.replace('[QUESTION]', question_per_batch)
+                            if question_per_batch:
+                                prompt = prompt_template.replace('[QUESTION]', question_per_batch)
+                            else:
+                                prompt = prompt_template
                             prompt = prompt.replace('[REFERENCE]', ref)
                             prompt = prompt.replace('[CLAIMS]', claims_text.strip())
                             prompt_list.append(prompt)
